@@ -16,11 +16,28 @@ from keras.models import load_model
 import h5py
 from keras import __version__ as keras_version
 
+import cv2
+import model # this is not working!
+class CTools:
+    def bgr2rgb(self, image):
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    def flip(self, image):
+        return cv2.flip(image, 1)
+
+    def crop(self, image):
+        return image[70:160, :]
+
+    def resize(self, image, shape=(160, 70)):
+        return cv2.resize(image, shape)
+
+    def pretty(self, image):
+        return self.resize(self.crop(image))
+
 sio = socketio.Server()
 app = Flask(__name__)
 model = None
 prev_image_array = None
-
 
 class SimplePIController:
     def __init__(self, Kp, Ki):
@@ -42,11 +59,9 @@ class SimplePIController:
 
         return self.Kp * self.error + self.Ki * self.integral
 
-
 controller = SimplePIController(0.1, 0.002)
-set_speed = 9
+set_speed = 14
 controller.set_desired(set_speed)
-
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -60,19 +75,24 @@ def telemetry(sid, data):
         # The current image from the center camera of the car
         imgString = data["image"]
         image = Image.open(BytesIO(base64.b64decode(imgString)))
-        image_array = np.asarray(image)
-        steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
-
-        throttle = controller.update(float(speed))
-
-        print(steering_angle, throttle)
-        send_control(steering_angle, throttle)
 
         # save frame
         if args.image_folder != '':
             timestamp = datetime.utcnow().strftime('%Y_%m_%d_%H_%M_%S_%f')[:-3]
             image_filename = os.path.join(args.image_folder, timestamp)
             image.save('{}.jpg'.format(image_filename))
+
+        tools = CTools()
+        image_array = np.asarray(image)
+        image_array = tools.pretty(image_array)
+        image_array = np.asarray(image_array)
+
+        steering_angle = float(model.predict(image_array[None, :, :, :], batch_size=1))
+
+        throttle = controller.update(float(speed))
+
+        print(steering_angle, throttle)
+        send_control(steering_angle, throttle)
     else:
         # NOTE: DON'T EDIT THIS.
         sio.emit('manual', data={}, skip_sid=True)
@@ -83,7 +103,6 @@ def connect(sid, environ):
     print("connect ", sid)
     send_control(0, 0)
 
-
 def send_control(steering_angle, throttle):
     sio.emit(
         "steer",
@@ -92,7 +111,6 @@ def send_control(steering_angle, throttle):
             'throttle': throttle.__str__()
         },
         skip_sid=True)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
