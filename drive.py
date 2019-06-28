@@ -20,8 +20,8 @@ import cv2
 import model # this is not working!
 class CTools:
     def __init__(self):
-        self.IMAGE_WIDTH = 240 
-        self.IMAGE_HEIGHT = 140
+        self.IMAGE_WIDTH = 160 
+        self.IMAGE_HEIGHT = 70
         self.IMAGE_CHANNELS = 3
 
     def bgr2rgb(self, image):

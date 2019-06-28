@@ -20,7 +20,7 @@ def main():
         help='FPS (Frames per second) setting for the video.')
     args = parser.parse_args()
 
-    source_folder = os.path.join(args.image_folder, 'IMG/')
+    source_folder = os.path.join(args.image_folder, 'IMG2/')
     
     #convert file folder into list firltered for image file types
     image_list = sorted([os.path.join(source_folder, image_file)
@@ -32,7 +32,7 @@ def main():
           
     #two methods of naming output video to handle varying environemnts
     video_file_1 = args.image_folder + '.mp4'
-    video_file_2 = args.image_folder + 'output_video.mp4'
+    video_file_2 = args.image_folder + 'output_img2.mp4'
 
     print("Creating video from '{}', FPS={}".format(source_folder, args.fps))
     clip = ImageSequenceClip(image_list, fps=args.fps)

@@ -17,7 +17,7 @@ The training images are taken from three different camera angles (center, left a
 
 - `model.py` The training model for the behavioral cloning.
 - `drive.py` Driver model - slightly modified from original version
-- `model-03.h5` The model weights. (other .h5 present, best fit was 03)
+- `model-003.h5` The model weights. (other .h5 present, best fit was 003)
 
 ## Model Architecture
 
@@ -32,9 +32,9 @@ The resulting model was:
 - Convolution layer:  64 filters, 3x3 kernel, 1x1 strides, activation: ReLu
 - Convolution layer:  64 filters, 3x3 kernel, 1x1 strides, activation: ReLu
 - Flatten
-- Fully connected:   100 neurons, activation: ReLu
-- Fully connected:    50 neurons, activation: ReLu
-- Fully connected:    10 neurons, activation: ReLu
+- Fully connected:   100 neurons, activation: ELu
+- Fully connected:    50 neurons, activation: ELu
+- Fully connected:    10 neurons, activation: ELu
 - Fully connected:     1 neurons (output - steering value)
 
 ### Preprocessing
@@ -64,4 +64,5 @@ python drive.py model-03.h5 'data/output/'
 
 I chose this output video because, although it drove pretty much on the edge of the road a few times, it also includes a return-to-track after deviating very far off on a right-curve with a very high steering value. It shows a flaw in detection but a great response capability later on.
 
-- [Lake Track](docs/output.mp4)
+- [Lake Track - clean ride](docs/output_img2.mp4)
+- [Lake Track - offroad](docs/output_img.mp4)

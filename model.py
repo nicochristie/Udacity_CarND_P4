@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 RESIZE_FACTOR = 100 # % of original
-IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS = 240, 140, 3
+IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS = 160, 70, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
 class CTools:
@@ -46,10 +46,10 @@ class CHyperParams:
         self.dataDirectory = 'data/myData/'
         self.dataFile = 'driving_log.csv'
         self.learningRate = 0.0009
-        self.samplesPerEpoch = 150
+        self.samplesPerEpoch = 102
         self.batchSize = 128
         self.testSize = 0.15
-        self.epochs = 20
+        self.epochs = 10
         self.loss = losses.mean_squared_error
     
     def getModel(self, inputShape=(IMAGE_WIDTH,IMAGE_HEIGHT)):
@@ -62,9 +62,9 @@ class CHyperParams:
         model.add(Conv2D(filters=64, kernel_size=3, strides=(1, 1), activation='relu'))
 
         model.add(Flatten())
-        model.add(Dense(100, activation='relu'))
-        model.add(Dense(50, activation='relu'))
-        model.add(Dense(10, activation='relu'))
+        model.add(Dense(100, activation='elu'))
+        model.add(Dense(50, activation='elu'))
+        model.add(Dense(10, activation='elu'))
         model.add(Dense(1)) # output steering value
 
         model.compile(loss = self.loss, optimizer = Adam(lr = self.learningRate))
@@ -99,13 +99,13 @@ def getBatch(data_dir, image_paths, steering_angles, batch_size, is_training):
                 images[i] = tools.pretty(image)
                 steers[i] = steering_angle
                 i += 1
-                if i >= batch_size:
+                if i >= batch_size - 2:
                     break
                     
         yield images, steers
         
 def train_model(hP, model, X_train, X_valid, y_train, y_valid):
-    checkpoint = ModelCheckpoint('model-{epoch:02d}.h5',
+    checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
                                  monitor = 'val_loss',
                                  verbose = 0,
                                  save_best_only = 'true',
@@ -122,7 +122,7 @@ def train_model(hP, model, X_train, X_valid, y_train, y_valid):
                         epochs = hP.epochs,
                         max_q_size = 1,
                         validation_data = getBatch(hP.dataDirectory, X_valid, y_valid, hP.batchSize, False),
-                        validation_steps = len(X_valid),
+                        validation_steps = len(X_valid)/hP.batchSize,
                         callbacks = [checkpoint],
                         verbose = 1)
     
