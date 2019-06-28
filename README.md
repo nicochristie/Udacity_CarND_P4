@@ -53,16 +53,20 @@ The loss function used is `mean_squared_error` and the optimizer used is `Adam` 
 The number of epochs was set to 10, a higher value provided little to no improvement.
 A test subgroup of 15% was selected for validation of each epoch. 
 
+#### Second run
+My first submission didn't go so well since the car was off road, so I re-trained, driving around the track twice, going relatively slow on the curves to get more frames on sensible areas and faster on straight parts. I also drove the other way for a full lap, for which I didn't filter out the frames were I turned (and drove on grass for a few seconds), so those are included in the training. I'm not sure if that helped or made it worse, but it should only be few frames anyway, the impact should be minimal.
+
 ### Testing
 ```python
-python drive.py model-03.h5 'data/output/'
+python drive.py model-003.h5 'data/output/'
 ```
 ### Samples
 ![1](docs/2019_06_27_20_10_24_934.jpg)![2](docs/2019_06_27_20_11_08_644.jpg)![3](docs/2019_06_27_20_11_41_379.jpg)![4](docs/2019_06_27_20_12_02_083.jpg)![5](docs/2019_06_27_20_12_08_479.jpg)![6](docs/2019_06_27_20_12_13_619.jpg)
 
 ## Results
 
-I chose this output video because, although it drove pretty much on the edge of the road a few times, it also includes a return-to-track after deviating very far off on a right-curve with a very high steering value. It shows a flaw in detection but a great response capability later on.
+Here's a sample video with the final configuration, two clean laps around the track.
+[Lake Track - clean ride](/data/output/output_img2.mp4)
 
-- [Lake Track - clean ride](docs/output_img2.mp4)
-- [Lake Track - offroad](docs/output_img.mp4)
+I include this output video because, although it drove pretty much on the edge of the road a few times, it also includes a return-to-track after deviating very far off on a right-curve with a very high steering value. It shows a flaw in detection but a great response capability later on.
+[Lake Track - offroad adventure but cool save](/data/output/output_img.mp4)
