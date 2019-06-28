@@ -16,37 +16,43 @@ from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS = 70, 160, 3
+RESIZE_FACTOR = 100 # % of original
+IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS = 240, 140, 3
 INPUT_SHAPE = (IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS)
 
-#class CTools:
-def bgr2rgb(self, image):
-    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+class CTools:
+    def bgr2rgb(self, image):
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-def flip(image):
-    return cv2.flip(image, 1)
+    def flip(self, image):
+        return cv2.flip(image, 1)
 
-def crop(image):
-    return image[70:160, :]
+    def crop(self, image):
+        return image[IMAGE_HEIGHT:IMAGE_WIDTH, :]
 
-def resize(image, shape=(160, 70)):
-    return cv2.resize(image, shape)
+    def resize(self, image, shape = (IMAGE_WIDTH, IMAGE_HEIGHT)):
+        #print("Image shape: ", image.shape)
+        #scale_percent = RESIZE_FACTOR # percent of original size
+        #width = int(image.shape[1] * scale_percent / 100)
+        #height = int(image.shape[0] * scale_percent / 100)
+        #return cv2.resize(image, (width, height), interpolation = cv2.INTER_AREA)
+        return cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT), interpolation = cv2.INTER_AREA)
 
-def pretty(image):
-    return resize(crop(image))
+    def pretty(self, image):
+        return self.resize(self.crop(image))
 
 class CHyperParams:
     def __init__(self):
         self.dataDirectory = 'data/myData/'
         self.dataFile = 'driving_log.csv'
         self.learningRate = 0.0009
-        self.samplesPerEpoch = 20000
-        self.batchSize = 200
+        self.samplesPerEpoch = 150
+        self.batchSize = 128
         self.testSize = 0.15
-        self.epochs = 10
+        self.epochs = 20
         self.loss = losses.mean_squared_error
     
-    def getModel(self, inputShape=(160,70)):
+    def getModel(self, inputShape=(IMAGE_WIDTH,IMAGE_HEIGHT)):
         model = Sequential()
         model.add(Lambda(lambda x:  (x / 127.5) - 1., input_shape=(inputShape[1], inputShape[0], 3)))
         model.add(Conv2D(filters=24, kernel_size=5, strides=(2, 2), activation='relu'))
@@ -78,8 +84,7 @@ def loadData(dataDir, dataFile, testSize):
 def getBatch(data_dir, image_paths, steering_angles, batch_size, is_training):
     images = np.empty([batch_size, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_CHANNELS])
     steers = np.empty(batch_size)
-    #tools = CTools()
-    #print("Batch size: ", batch_size)
+    tools = CTools()
     while True:
         i = 0
         for index in np.random.permutation(image_paths.shape[0]):
@@ -91,18 +96,16 @@ def getBatch(data_dir, image_paths, steering_angles, batch_size, is_training):
                 image = mpimg.imread(filePath)
 
                 # add the image and steering angle to the batch
-                #images[i] = tools.pretty(image)
-                images[i] = pretty(image)
+                images[i] = tools.pretty(image)
                 steers[i] = steering_angle
                 i += 1
-                #print ("File path:", filePath, "| i =", i, end="\r")
-                if i == batch_size - 1:
+                if i >= batch_size:
                     break
                     
         yield images, steers
         
 def train_model(hP, model, X_train, X_valid, y_train, y_valid):
-    checkpoint = ModelCheckpoint('model-{epoch:03d}.h5',
+    checkpoint = ModelCheckpoint('model-{epoch:02d}.h5',
                                  monitor = 'val_loss',
                                  verbose = 0,
                                  save_best_only = 'true',
@@ -119,8 +122,8 @@ def train_model(hP, model, X_train, X_valid, y_train, y_valid):
                         epochs = hP.epochs,
                         max_q_size = 1,
                         validation_data = getBatch(hP.dataDirectory, X_valid, y_valid, hP.batchSize, False),
-                        nb_val_samples = len(X_valid),
-                        #callbacks = [checkpoint],
+                        validation_steps = len(X_valid),
+                        callbacks = [checkpoint],
                         verbose = 1)
     
 if __name__ == '__main__':
@@ -130,4 +133,4 @@ if __name__ == '__main__':
     X_train, X_valid, y_train, y_valid = loadData(hP.dataDirectory, hP.dataFile, hP.testSize)
     train_model(hP, model, X_train, X_valid, y_train, y_valid)
     
-# end of model.py    
+# end of model.py

@@ -19,6 +19,11 @@ from keras import __version__ as keras_version
 import cv2
 import model # this is not working!
 class CTools:
+    def __init__(self):
+        self.IMAGE_WIDTH = 240 
+        self.IMAGE_HEIGHT = 140
+        self.IMAGE_CHANNELS = 3
+
     def bgr2rgb(self, image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -26,13 +31,13 @@ class CTools:
         return cv2.flip(image, 1)
 
     def crop(self, image):
-        return image[70:160, :]
+        return image[self.IMAGE_HEIGHT:self.IMAGE_WIDTH, :]
 
-    def resize(self, image, shape=(160, 70)):
+    def resize(self, image, shape):
         return cv2.resize(image, shape)
 
     def pretty(self, image):
-        return self.resize(self.crop(image))
+        return self.resize(self.crop(image), (self.IMAGE_WIDTH, self.IMAGE_HEIGHT))
 
 sio = socketio.Server()
 app = Flask(__name__)
