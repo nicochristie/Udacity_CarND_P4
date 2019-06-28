@@ -2,7 +2,7 @@
 
 |Lake Track|
 |:--------:|
-|[Right turn example](docs/CarND-P3-right-curve.gif)|
+|![Right turn example](docs/CarND-P3-right-curve.gif)|
 
 ## Description
 
@@ -63,4 +63,4 @@ python drive.py model-03.h5 'data/output/'
 
 I chose this output video because, although it drove pretty much on the edge of the road all the time, it also includes a return-to-track after deviating very far off on a right-curve with a very high steering value. It shows a flaw in detection but a great response capability later on.
 
-- [Lake Track](docs/output.mp4)
+- ![Lake Track](docs/output.mp4)
