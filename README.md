@@ -17,16 +17,6 @@ The training images are taken from three different camera angles (center, left a
 - `drive.py` Driver model - slightly modified from original version
 - `model-03.h5` The model weights. (other .h5 present, best fit was 03)
 
-## Training
-
-### To train the model
-
-```python
-python model.py
-```
-
-After completing all epochs, one or more `model-<epoch#>.h5` files could be output (if `save_best_only` was set to `True`), whenever the performance of the epoch is better than the previous best.
-
 ## Model Architecture
 
 The design is based on [the NVIDIA model](https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/) - It's a deep convolution network optimised for image classification/regression problems. A Lambda layer was added first to normalize input images and avoid saturation.
@@ -51,15 +41,23 @@ As suggested in class, images were cropped to cut the upper part that would only
 
 ## Training, Validation and Test
 
+### Training 
+```python
+python model.py
+```
+After completing all epochs, one or more `model-<epoch#>.h5` files could be output (if `save_best_only` was set to `True`), whenever the performance of the epoch is better than the previous best.
 The training source consisted of two laps around the track. Tried staying on the right, but failing to do so and driving on both sides of the road probably got me better results since the edges of the road were more visible.
 The loss function used is `mean_squared_error` and the optimizer used is `Adam` with a learning rate of 0.0009.
 The number of epochs was set to 10, a higher value provided little to no improvement.
 A test subgroup of 15% was selected for validation of each epoch. 
 
-### To test the model
+### Testing
 ```python
 python drive.py model-03.h5 'data/output/'
 ```
+### Samples
+[1](docs/2019_06_27_20_10_24_934.jpg)[2](docs/2019_06_27_20_11_08_644.jpg)[3](docs/2019_06_27_20_11_41_379.jpg)
+[4](docs/2019_06_27_20_12_02_083.jpg)[5](docs/2019_06_27_20_12_08_479.jpg)[6](docs/2019_06_27_20_12_13_619.jpg)
 
 ## Results
 
