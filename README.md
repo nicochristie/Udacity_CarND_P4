@@ -1,6 +1,8 @@
+# Behavioral Cloning
+
 |Lake Track|
 |:--------:|
-|[Right turn example](docs/CarND-P3-right-curve.gif)]|
+|[Right turn example](docs/CarND-P3-right-curve.gif)|
 
 ## Description
 
@@ -43,7 +45,7 @@ The resulting model was:
 - Fully connected:    10 neurons, activation: ReLu
 - Fully connected:     1 neurons (output - steering value)
 
-## Preprocessing
+### Preprocessing
 
 As suggested in class, images were cropped to cut the upper part that would only introduce error and noise to the CNN.
 
@@ -53,6 +55,11 @@ The training source consisted of two laps around the track. Tried staying on the
 The loss function used is `mean_squared_error` and the optimizer used is `Adam` with a learning rate of 0.0009.
 The number of epochs was set to 10, a higher value provided little to no improvement.
 A test subgroup of 15% was selected for validation of each epoch. 
+
+### To test the model
+```python
+python drive.py model-03.h5 'data/output/'
+```
 
 ## Results
 
