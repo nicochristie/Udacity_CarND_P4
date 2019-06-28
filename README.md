@@ -1,6 +1,7 @@
 Behavioral Cloning
 ======
 
+
 |Lake Track|
 |:--------:|
 |![Right turn example](docs/CarND-P3-right-curve.gif)|
@@ -57,9 +58,7 @@ A test subgroup of 15% was selected for validation of each epoch.
 python drive.py model-03.h5 'data/output/'
 ```
 ### Samples
-|![1](docs/2019_06_27_20_10_24_934.jpg)![2](docs/2019_06_27_20_11_08_644.jpg)|
-|![3](docs/2019_06_27_20_11_41_379.jpg)![4](docs/2019_06_27_20_12_02_083.jpg)|
-|![5](docs/2019_06_27_20_12_08_479.jpg)![6](docs/2019_06_27_20_12_13_619.jpg)|
+![1](docs/2019_06_27_20_10_24_934.jpg)![2](docs/2019_06_27_20_11_08_644.jpg)![3](docs/2019_06_27_20_11_41_379.jpg)![4](docs/2019_06_27_20_12_02_083.jpg)![5](docs/2019_06_27_20_12_08_479.jpg)![6](docs/2019_06_27_20_12_13_619.jpg)
 
 ## Results
 
